@@ -1,40 +1,45 @@
  <?php
     /*Plugins 
  Formulario para cadastro de usuario*/
-    class Update
+    class atualizarDadosUsuario
     {
         public static function init()
         {
-            add_shortcode('update_cadastro', 'Update::formLogin');
-            add_action('wp_enqueue_scripts', 'Update::enqueue_scripts', 500);
+            add_shortcode('update_cadastro', 'atualizarDadosUsuario::formLogin');
+            add_action('wp_enqueue_scripts', 'atualizarDadosUsuario::enqueue_scripts', 500);
             //caminho Endpoint da API
-            
+            add_action('rest_api_init', function () {
+                register_rest_route('api/user', '/atualizarDados', array(
+                    'methods' => 'POST',
+                    'callback' => ' atualizarDadosUsuario::atualizarDados',
+                ));
+            });
         }
 
 
         public static function formLogin()
-        {  
+        {
             //Condição para usar o formulario somente logado
-            if(!is_user_logged_in() ) {
+            if (!is_user_logged_in()) {
                 echo "<div class='sucesso-login'>VOCÊ NÃO ESTÁ LOGADO, REDIRECIONANDO...</div>";
-            	wp_redirect( get_site_url(). "/login");
-            	exit();
-           }
+                wp_redirect(get_site_url() . "/login");
+                exit();
+            }
 
 
             // Obtenha os dados do usuário logado
             $current_user = wp_get_current_user();
- 
+
             // Pegue os detalhes que você deseja pelo ID
             $user_id       = $current_user->ID;
             $user_login    = $current_user->user_login;
             $user_email    = $current_user->user_email;
-            $user_firstname= $current_user->user_firstname;
+            $user_firstname = $current_user->user_firstname;
             $user_lastname = $current_user->user_lastname;
 
-           
 
-             //pega os campos do cliente 
+
+            //pega os campos do cliente 
             $user_nome = get_user_meta($user_id, 'user_nome_completo', true);
             $user_cpf = get_user_meta($user_id, 'user_cpf', true);
             $user_codigo_entidade = get_user_meta($user_id, 'user_codigo_entidade', true);
@@ -54,32 +59,33 @@
 
          <!--Formulario em HTML-->
          <form name="formUsuario" id="formUsuario" action="#" autocomplete="off">
+             <input type="hidden" name="user_id" id="user_id" value="<?= $user_id; ?>" />
              <label for="usuario-nome">Nome completo</label>
-             <input type="text" name="usuario-nome" id="usuario-nome" value="<?= $user_nome;?>" require />
+             <input type="text" name="usuario-nome" id="usuario-nome" value="<?= $user_nome; ?>" disabled />
              <label for="usuario-cpf">CPF</label>
-             <input type="text" name="usuario-cpf" id="usuario-cpf" class="mascara-cpf" value="<?= $user_cpf;?>" require />
+             <input type="text" name="usuario-cpf" id="usuario-cpf" class="mascara-cpf" value="<?= $user_cpf; ?>" disabled />
              <label for="usuario-codigo-entidade">Codigo entidade</label>
-             <input type="text" name="usuario-codigo-entidade" id="usuario-codigo-entidade" value="<?= $user_codigo_entidade;?>" require />
+             <input type="text" name="usuario-codigo-entidade" id="usuario-codigo-entidade" value="<?= $user_codigo_entidade; ?>" disabled />
              <label for="usuario-codigo-operador">Codigo operador</label>
-             <input type="text" name="usuario-codigo-operador" id="usuario-codigo-operador" value="<?= $user_codigo_operador;?>" require />
+             <input type="text" name="usuario-codigo-operador" id="usuario-codigo-operador" value="<?= $user_codigo_operador; ?>" disabled />
              <label for="usuario-celular">Celular</label>
-             <input type="text" name="usuario-celular" id="usuario-celular" class="mascara-telefone" value="<?=  $user_celular;?>" require />
+             <input type="text" name="usuario-celular" id="usuario-celular" class="mascara-telefone" value="<?= $user_celular; ?>" disabled />
              <label for="usuario-email">E-mail</label>
-             <input type="email" name="usuario-email" id="usuario-email" value="<?= $user_email;?>" require />
+             <input type="email" name="usuario-email" id="usuario-email" value="<?= $user_email; ?>" disabled />
              <label for="usuario-cep">Cep</label>
-             <input type="text" name="usuario-cep" id="usuario-cep" class="mascara-cep" value="<?= $cep;?>" require />
+             <input type="text" name="usuario-cep" id="usuario-cep" class="mascara-cep" value="<?= $cep; ?>" require />
              <label for="usuario-logradouro">Logradouro</label>
-             <input type="text" name="usuario-logradouro" id="usuario-logradouro" value="<?= $logradouro;?>" require />
+             <input type="text" name="usuario-logradouro" id="usuario-logradouro" value="<?= $logradouro; ?>" require />
              <label for="usuario-numero">Numero</label>
-             <input type="text" name="usuario-numero" id="usuario-numero" value="<?= $numero;?>" require />
+             <input type="text" name="usuario-numero" id="usuario-numero" value="<?= $numero; ?>" require />
              <label for="usuario-complemento">Complemento</label>
-             <input type="text" name="usuario-complemento" id="usuario-complemento" value="<?=  $complemento;?>" />
+             <input type="text" name="usuario-complemento" id="usuario-complemento" value="<?= $complemento; ?>" />
              <label for="usuario-bairro">Bairro</label>
-             <input type="text" name="usuario-bairro" id="usuario-bairro" value="<?= $bairro;?>" require />
+             <input type="text" name="usuario-bairro" id="usuario-bairro" value="<?= $bairro; ?>" require />
              <label for="usuario-cidade">Cidade</label>
-             <input type="text" name="usuario-cidade" id="usuario-cidade" value="<?= $cidade;?>" require />
+             <input type="text" name="usuario-cidade" id="usuario-cidade" value="<?= $cidade; ?>" require />
              <label for="usuario-uf">UF</label>
-             <input type="text" name="usuario-uf" id="usuario-uf" value="<?=$uf;?>" require />
+             <input type="text" name="usuario-uf" id="usuario-uf" value="<?= $uf; ?>" require />
              <br>
              <label for="usuario-aceito-termos" style="display: block;">
                  <input type="checkbox" name="usuario-aceito-termos" id="usuario-aceito-termos">
@@ -87,7 +93,7 @@
                  dependente(s) para recebimento de informações.
              </label>
              <br>
-             <button type="button" id="btn-update-formulario">CRIAR CONTA</button>
+             <button type="button" id="btn-update-formulario">EDITAR CADASTRO</button>
          </form>
 
  <?php
@@ -118,43 +124,6 @@
             $uf = sanitize_text_field($dados['user_uf']);
 
 
-
-
-            //validando cpf existe no BD
-            // Se o CPF já estiver em uso, retorne um JSON indicando o erro encerra o programa
-            // Remove caracteres não numéricos e retira as mascaras
-            $user_cpf = preg_replace('/\D/', '', $user_cpf);
-            $user_id_by_cpf = username_exists($user_cpf);
-            if ($user_id_by_cpf) {
-                $retorno = array(
-                    'status' => 'erro',
-                    'message' => 'CPF JÁ CADASTRADO',
-                );
-                return new WP_REST_Response($retorno, 200);
-            }
-
-
-
-            //validando se email ja esta no BD
-            // Verificar se o email já está em uso
-            $user_id_by_email = email_exists($user_email);
-            // Se o email já estiver em uso, retorne um JSON indicando o erro
-            if ($user_id_by_email) {
-                $retorno = array(
-                    'status' => 'erro',
-                    'message' => 'E-MAIL JÁ CADASTRADO',
-                );
-                return new WP_REST_Response($retorno, 200);
-            }
-
-            //chamada para função split_name
-            $arrayName = Update::split_name($user_nome);
-            $first_name = $arrayName['first_name'];
-            $middle_name =  $arrayName['middle_name'];
-            $last_name = $arrayName['last_name'];
-            if (!empty($middle_name) && !is_null($middle_name)) {
-                $last_name = $middle_name . " " . $last_name;
-            }
 
 
             //Criamos um Array que vai para o BD do WP
@@ -234,7 +203,6 @@
             $version = time();
             wp_enqueue_script('jquery-mask', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js', array('jquery'), '1.14.16', true);
             wp_enqueue_script('update-script', plugins_url('wp-plugin-formulario-usuario/assets/js/formularioUpdate.js'), array('jquery'), $version, true);
-           
         }
     }
 
