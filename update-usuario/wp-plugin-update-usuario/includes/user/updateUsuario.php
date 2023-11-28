@@ -5,18 +5,18 @@
     {
         public static function init()
         {
-            add_shortcode('update_cadastro', 'Update::formSenha');
+            add_shortcode('update_cadastro', 'Update::formLogin');
             add_action('wp_enqueue_scripts', 'Update::enqueue_scripts', 500);
             //caminho Endpoint da API
             
         }
 
 
-        public static function formSenha()
+        public static function formLogin()
         {      //Condição para usar o formulario somente logado
             // para fazer teste comentar o if
             if (!is_user_logged_in()) {
-                echo "<div class='sucesso-login'>VOCÊ JÁ ESTÁ LOGADO, REDIRECIONANDO...</div>";
+                echo "<div class='sucesso-login'>VOCÊ NÃO ESTÁ LOGADO, REDIRECIONANDO...</div>";
                 wp_redirect(get_site_url());
                 exit();
             }
