@@ -1,24 +1,19 @@
  <?php
     /*Plugins 
  Formulario para cadastro de usuario*/
-    class Formulario
+    class Update
     {
         public static function init()
         {
-            add_shortcode('formulario_cadastro', 'Formulario::formSenha');
-            add_action('wp_enqueue_scripts', 'Formulario::enqueue_scripts', 500);
+            add_shortcode('update_cadastro', 'Update::formSenha');
+            add_action('wp_enqueue_scripts', 'Update::enqueue_scripts', 500);
             //caminho Endpoint da API
-            add_action('rest_api_init', function () {
-                register_rest_route('api/user', '/salvarDadosUsuario', array(
-                    'methods' => 'POST',
-                    'callback' => 'Formulario::salvarDadosUsuario',
-                ));
-            });
+            
         }
 
 
         public static function formSenha()
-        {      //Condição para usar o formulario somente não logado
+        {      //Condição para usar o formulario somente logado
             // para fazer teste comentar o if
             if (is_user_logged_in()) {
                 echo "<div class='sucesso-login'>VOCÊ JÁ ESTÁ LOGADO, REDIRECIONANDO...</div>";
@@ -65,7 +60,7 @@
                  dependente(s) para recebimento de informações.
              </label>
              <br>
-             <button type="button" id="btn-usuario-formulario">CRIAR CONTA</button>
+             <button type="button" id="btn-update-formulario">CRIAR CONTA</button>
          </form>
 
  <?php
@@ -76,7 +71,7 @@
 
 
         //salvar dados vindo da validação do JS
-        public static function salvarDadosUsuario($request)
+        public static function atualizarDados($request)
         {
             // Obtenha os dados enviados na requisição POST
             $dados = $request->get_params();
@@ -126,7 +121,7 @@
             }
 
             //chamada para função split_name
-            $arrayName = Formulario::split_name($user_nome);
+            $arrayName = Update::split_name($user_nome);
             $first_name = $arrayName['first_name'];
             $middle_name =  $arrayName['middle_name'];
             $last_name = $arrayName['last_name'];
@@ -211,7 +206,7 @@
         {
             $version = time();
             wp_enqueue_script('jquery-mask', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js', array('jquery'), '1.14.16', true);
-            wp_enqueue_script('form-script', plugins_url('wp-plugin-formulario-usuario/assets/js/formularioRegister.js'), array('jquery'), $version, true);
+            wp_enqueue_script('update-script', plugins_url('wp-plugin-formulario-usuario/assets/js/formularioUpdate.js'), array('jquery'), $version, true);
            
         }
     }
