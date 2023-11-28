@@ -4,7 +4,7 @@
     {
         public static function init()
         {
-            add_shortcode('formulario_cadastro', 'Login::formSenha');
+            add_shortcode('login_cadastro', 'Login::formSenha');
             add_action('wp_enqueue_scripts', 'Login::enqueue_scripts', 500);
             //caminho Endpoint da API
             add_action('rest_api_init', function () {
@@ -210,8 +210,8 @@
         {
             $version = time();
             wp_enqueue_script('jquery-mask', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js', array('jquery'), '1.14.16', true);
-            wp_enqueue_script('form-script', plugins_url('wp-plugin-formulario-usuario/assets/js/formularioRegister.js'), array('jquery'), $version, true);
-            wp_enqueue_style('form-css', plugins_url('wp-plugin-formulario-usuario/assets/css/style.css'));
+            wp_enqueue_script('login-script', plugins_url('wp-plugin-formulario-usuario/assets/js/loginRegister.js'), array('jquery'), $version, true);
+           
         }
     }
 

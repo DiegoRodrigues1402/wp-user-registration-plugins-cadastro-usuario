@@ -212,7 +212,7 @@
             $version = time();
             wp_enqueue_script('jquery-mask', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js', array('jquery'), '1.14.16', true);
             wp_enqueue_script('form-script', plugins_url('wp-plugin-formulario-usuario/assets/js/formularioRegister.js'), array('jquery'), $version, true);
-            wp_enqueue_style('form-css', plugins_url('wp-plugin-formulario-usuario/assets/css/style.css'));
+           
         }
     }
 
