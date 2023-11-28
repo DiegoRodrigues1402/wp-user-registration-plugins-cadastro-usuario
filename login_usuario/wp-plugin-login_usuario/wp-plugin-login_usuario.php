@@ -8,5 +8,5 @@ Author URI:linkedin.com/in/diego-flores-rodrigues-0924ab42/
 License: GPL2
 */
 include __DIR__ . '/includes/user/loginUsuario.php';
-Login::init();
+LoginUsuario::init();
 ?>

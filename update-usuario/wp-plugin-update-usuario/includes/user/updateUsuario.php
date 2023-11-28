@@ -13,41 +13,73 @@
 
 
         public static function formLogin()
-        {      //Condição para usar o formulario somente logado
-            
+        {  
+            //Condição para usar o formulario somente logado
+            if(!is_user_logged_in() ) {
+                echo "<div class='sucesso-login'>VOCÊ NÃO ESTÁ LOGADO, REDIRECIONANDO...</div>";
+            	wp_redirect( get_site_url(). "/login");
+            	exit();
+           }
+
+
+            // Obtenha os dados do usuário logado
+            $current_user = wp_get_current_user();
+ 
+            // Pegue os detalhes que você deseja pelo ID
+            $user_id       = $current_user->ID;
+            $user_login    = $current_user->user_login;
+            $user_email    = $current_user->user_email;
+            $user_firstname= $current_user->user_firstname;
+            $user_lastname = $current_user->user_lastname;
+
+           
+
+             //pega os campos do cliente 
+            $user_nome = get_user_meta($user_id, 'user_nome_completo', true);
+            $user_cpf = get_user_meta($user_id, 'user_cpf', true);
+            $user_codigo_entidade = get_user_meta($user_id, 'user_codigo_entidade', true);
+            $user_codigo_operador = get_user_meta($user_id, 'user_codigo_operador', true);
+            $user_celular = get_user_meta($user_id, 'user_telefone', true);
+            $user_email = get_user_meta($user_id, 'user_email', true);
+            $cep = get_user_meta($user_id, 'user_cep', true);
+            $logradouro = get_user_meta($user_id, 'user_logradouro', true);
+            $numero = get_user_meta($user_id, 'user_numero', true);
+            $complemento = get_user_meta($user_id, 'user_complemento', true);
+            $bairro = get_user_meta($user_id, 'user_bairro', true);
+            $cidade = get_user_meta($user_id, 'user_cidade', true);
+            $uf = get_user_meta($user_id, 'user_uf', true);
     ?>
+
+
+
          <!--Formulario em HTML-->
          <form name="formUsuario" id="formUsuario" action="#" autocomplete="off">
              <label for="usuario-nome">Nome completo</label>
-             <input type="text" name="usuario-nome" id="usuario-nome" value="" require />
+             <input type="text" name="usuario-nome" id="usuario-nome" value="<?= $user_nome;?>" require />
              <label for="usuario-cpf">CPF</label>
-             <input type="text" name="usuario-cpf" id="usuario-cpf" class="mascara-cpf" value="" require />
+             <input type="text" name="usuario-cpf" id="usuario-cpf" class="mascara-cpf" value="<?= $user_cpf;?>" require />
              <label for="usuario-codigo-entidade">Codigo entidade</label>
-             <input type="text" name="usuario-codigo-entidade" id="usuario-codigo-entidade" value="" require />
+             <input type="text" name="usuario-codigo-entidade" id="usuario-codigo-entidade" value="<?= $user_codigo_entidade;?>" require />
              <label for="usuario-codigo-operador">Codigo operador</label>
-             <input type="text" name="usuario-codigo-operador" id="usuario-codigo-operador" value="" require />
+             <input type="text" name="usuario-codigo-operador" id="usuario-codigo-operador" value="<?= $user_codigo_operador;?>" require />
              <label for="usuario-celular">Celular</label>
-             <input type="text" name="usuario-celular" id="usuario-celular" class="mascara-telefone" value="" require />
+             <input type="text" name="usuario-celular" id="usuario-celular" class="mascara-telefone" value="<?=  $user_celular;?>" require />
              <label for="usuario-email">E-mail</label>
-             <input type="email" name="usuario-email" id="usuario-email" value="" require />
-             <label for="usuario-senha">Senha</label>
-             <input type="password" name="usuario-senha" id="usuario-senha" value="" require />
-             <label for="usuario-confirmar-senha">Confirmar senha</label>
-             <input type="password" name="usuario-confirmar-senha" id="usuario-confirmar-senha" value="" require />
+             <input type="email" name="usuario-email" id="usuario-email" value="<?= $user_email;?>" require />
              <label for="usuario-cep">Cep</label>
-             <input type="text" name="usuario-cep" id="usuario-cep" class="mascara-cep" value="" require />
+             <input type="text" name="usuario-cep" id="usuario-cep" class="mascara-cep" value="<?= $cep;?>" require />
              <label for="usuario-logradouro">Logradouro</label>
-             <input type="text" name="usuario-logradouro" id="usuario-logradouro" value="" require />
+             <input type="text" name="usuario-logradouro" id="usuario-logradouro" value="<?= $logradouro;?>" require />
              <label for="usuario-numero">Numero</label>
-             <input type="text" name="usuario-numero" id="usuario-numero" value="" require />
+             <input type="text" name="usuario-numero" id="usuario-numero" value="<?= $numero;?>" require />
              <label for="usuario-complemento">Complemento</label>
-             <input type="text" name="usuario-complemento" id="usuario-complemento" value="" />
+             <input type="text" name="usuario-complemento" id="usuario-complemento" value="<?=  $complemento;?>" />
              <label for="usuario-bairro">Bairro</label>
-             <input type="text" name="usuario-bairro" id="usuario-bairro" value="" require />
+             <input type="text" name="usuario-bairro" id="usuario-bairro" value="<?= $bairro;?>" require />
              <label for="usuario-cidade">Cidade</label>
-             <input type="text" name="usuario-cidade" id="usuario-cidade" value="" require />
+             <input type="text" name="usuario-cidade" id="usuario-cidade" value="<?= $cidade;?>" require />
              <label for="usuario-uf">UF</label>
-             <input type="text" name="usuario-uf" id="usuario-uf" value="" require />
+             <input type="text" name="usuario-uf" id="usuario-uf" value="<?=$uf;?>" require />
              <br>
              <label for="usuario-aceito-termos" style="display: block;">
                  <input type="checkbox" name="usuario-aceito-termos" id="usuario-aceito-termos">

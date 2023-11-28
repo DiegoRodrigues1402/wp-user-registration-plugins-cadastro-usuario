@@ -1,16 +1,16 @@
  <?php
     /*Plugins Login usuario*/
-    class Login
+    class LoginUsuario
     {
         public static function init()
         {
-            add_shortcode('login_cadastro', 'Login::formSenha');
-            add_action('wp_enqueue_scripts', 'Login::enqueue_scripts', 500);
+            add_shortcode('login_cadastro', 'LoginUsuario::formSenha');
+            add_action('wp_enqueue_scripts', 'LoginUsuario::enqueue_scripts', 500);
             //caminho Endpoint da API
             add_action('rest_api_init', function () {
                 register_rest_route('api/user', '/salvarDadosUsuario', array(
                     'methods' => 'POST',
-                    'callback' => 'Login::salvarDadosUsuario',
+                    'callback' => 'LoginUsuario::salvarDadosUsuario',
                 ));
             });
         }
@@ -125,7 +125,7 @@
             }
 
             //chamada para função split_name
-            $arrayName = Formulario::split_name($user_nome);
+            $arrayName = LoginUsuario::split_name($user_nome);
             $first_name = $arrayName['first_name'];
             $middle_name =  $arrayName['middle_name'];
             $last_name = $arrayName['last_name'];
@@ -210,7 +210,7 @@
         {
             $version = time();
             wp_enqueue_script('jquery-mask', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js', array('jquery'), '1.14.16', true);
-            wp_enqueue_script('login-script', plugins_url('wp-plugin-formulario-usuario/assets/js/loginRegister.js'), array('jquery'), $version, true);
+            wp_enqueue_script('login-script', plugins_url('wp-plugin-login_usuario/wp-plugin-login_usuario/assets/js/loginRegister.js'), array('jquery'), $version, true);
            
         }
     }
