@@ -15,7 +15,7 @@
         public static function formSenha()
         {      //Condição para usar o formulario somente logado
             // para fazer teste comentar o if
-            if (is_user_logged_in()) {
+            if (!is_user_logged_in()) {
                 echo "<div class='sucesso-login'>VOCÊ JÁ ESTÁ LOGADO, REDIRECIONANDO...</div>";
                 wp_redirect(get_site_url());
                 exit();
