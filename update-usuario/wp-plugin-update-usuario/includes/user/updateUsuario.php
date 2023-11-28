@@ -14,12 +14,7 @@
 
         public static function formLogin()
         {      //Condição para usar o formulario somente logado
-            // para fazer teste comentar o if
-            if (!is_user_logged_in()) {
-                echo "<div class='sucesso-login'>VOCÊ NÃO ESTÁ LOGADO, REDIRECIONANDO...</div>";
-                wp_redirect(get_site_url());
-                exit();
-            }
+            
     ?>
          <!--Formulario em HTML-->
          <form name="formUsuario" id="formUsuario" action="#" autocomplete="off">
