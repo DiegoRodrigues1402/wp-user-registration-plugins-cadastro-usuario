@@ -12,7 +12,7 @@
 
 	// Manipula o evento de clique no botão
 	$("#btn-atualizar-dados").click(function () {
-		let ret = atualizarDados();
+		let ret = atualizarDadosNovos();
 		if (ret === true) {
 			// Perguntar ao usuário se ele realmente quer enviar
 			if (!confirm("Confirmar o envio dos dados!")) return;
@@ -22,8 +22,20 @@
 	});
 
 
-	function atualizarDados() {
-		
+	function atualizarDadosNovos() {
+
+		//Validar E-mail
+		var email = $('#usuario-email').val().trim()
+		if (email === '') {
+			alert('POR FAVOR INFORME SEU E-MAIL')
+			document.getElementById('usuario-email').focus()
+			return false
+		} else if (!validarEmail(email)) {
+			alert('E-MAIL INVÁLIDO! POR FAVOR INFORME UM E-MAIL VÁLIDO')
+			document.getElementById('usuario-email').focus()
+			return false
+		}
+
 		//Validar endereço
 		if ($('#usuario-cep').val().trim() == '') {
 			alert('POR FAVOR INFORME SEU CEP')
@@ -90,9 +102,17 @@
 	}
 
 
+	// função para validar se o email existe
+	function validarEmail(email) {
+		var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return regex.test(email);
+	}
+
 	// salvar os dados validados e adicionar no dados
 	function salvarDadosAtualizados() {
 		var dados = {
+			user_id: $('#usuario_id').val().trim(),
+			user_email: $('#usuario-email').val().trim(),
 			user_cep: $('#usuario-cep').val().trim(),
 			user_logradouro: $('#usuario-logradouro').val().trim(),
 			user_numero: $('#usuario-numero').val().trim(),
@@ -105,17 +125,19 @@
 		console.log(dados);
 
 		// Pega o domínio atual
-		var dominioAtual = window.location.origin;
+		var dominioAtual =  window.location.origin;
+		console.log(dominioAtual);
 		//transfere a var dados para o servidor
+		
 		$.ajax({
-			url: dominioAtual + '/wp-json/api/user/atualizarDados',
+			url: dominioAtual + '/wp-json/api/user/atualizarUsuario',
 			method: 'POST',
 			data: dados,
 			success: function (data) {
 				console.log(data);
 				if (data.status === 'sucesso') {
 					alert("SALVO COM SUCESSO");
-					window.location.href = 'https://www.linkedin.com/in/diego-flores-rodrigues-0924ab42/'
+					
 				} else {
 					alert(data.message);
 				}
@@ -123,6 +145,7 @@
 			error: function (data) {
 				console.log(data);
 				$("#msg-form-cad").html("<h3>Algum erro</h3>");
+				alert("ERRO INTERNO");
 			}
 		});
 	}

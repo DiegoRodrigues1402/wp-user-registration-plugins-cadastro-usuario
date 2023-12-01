@@ -1,17 +1,18 @@
 <?php
-    class atualizarDadosUsuario
+    class atualizarCadastroUsuario
     {
         public static function init()
         {
-            add_shortcode('atualizar_cadastro', 'atualizarDadosUsuario::formularioAtualizacao');
-            add_action('wp_enqueue_scripts', 'atualizarDadosUsuario::enqueue_scripts', 500);
+            add_shortcode('atualizar_cadastro', 'atualizarCadastroUsuario::formularioAtualizacao');
+            add_action('wp_enqueue_scripts', 'atualizarCadastroUsuario::enqueue_scripts', 500);
             //caminho Endpoint da API
             add_action('rest_api_init', function () {
-                register_rest_route('api/user', '/atualizarDados', array(
+                register_rest_route('api/user', '/atualizarUsuario', array(
                     'methods' => 'POST',
-                    'callback' => ' atualizarDadosUsuario::atualizarDados',
+                    'callback' => array('atualizarCadastroUsuario', 'atualizarUsuario'),
                 ));
             });
+            
         }
 
 
@@ -30,10 +31,8 @@
 
             // Pegue os detalhes que você deseja pelo ID
             $user_id       = $current_user->ID;
-            $user_login    = $current_user->user_login;
             $user_email    = $current_user->user_email;
-            $user_firstname = $current_user->user_firstname;
-            $user_lastname = $current_user->user_lastname;
+           
 
 
 
@@ -57,7 +56,7 @@
 
          <!--Formulario em HTML-->
          <form name="formUsuario" id="formUsuario" action="#" autocomplete="off">
-            <input type="hidden" name="user_id" id="user_id" value="<?= $user_id; ?>" />
+            <input type="hidden" name="usuario_id" id="usuario_id" value="<?= $user_id; ?>" />
              <label for="usuario-nome">Nome completo</label>
              <input type="text" name="usuario-nome" id="usuario-nome" value="<?= $user_nome; ?>" disabled />
              <label for="usuario-cpf">CPF</label>
@@ -69,7 +68,7 @@
              <label for="usuario-celular">Celular</label>
              <input type="text" name="usuario-celular" id="usuario-celular" class="mascara-telefone" value="<?= $user_celular; ?>" disabled />
              <label for="usuario-email">E-mail</label>
-             <input type="email" name="usuario-email" id="usuario-email" value="<?= $user_email; ?>" disabled />
+             <input type="email" name="usuario-email" id="usuario-email" value="<?= $user_email; ?>"  require />
              <label for="usuario-cep">Cep</label>
              <input type="text" name="usuario-cep" id="usuario-cep" class="mascara-cep" value="<?= $cep; ?>" require />
              <label for="usuario-logradouro">Logradouro</label>
@@ -96,61 +95,49 @@
 
 
         //salvar dados vindo da validação do JS
-        public static function atualizarDados($request)
+        public static function atualizarUsuario($request)
         {
             // Obtenha os dados enviados na requisição POST
             $dados = $request->get_params();
-            $user_nome = sanitize_text_field($dados['user_nome']);
-            $user_cpf = sanitize_text_field($dados['user_cpf']);
-            $user_codigo_entidade = sanitize_text_field($dados['user_codigo_entidade']);
-            $user_codigo_operador = sanitize_text_field($dados['user_codigo_operador']);
-            $user_celular = sanitize_text_field($dados['user_telefone']);
-            $user_email = sanitize_email($dados['user_email']);
-            $user_senha =  $dados['user_senha'];
-            $cep = sanitize_text_field($dados['user_cep']);
-            $logradouro = sanitize_text_field($dados['user_logradouro']);
-            $numero = sanitize_text_field($dados['user_numero']);
-            $complemento = sanitize_text_field($dados['user_complemento']);
-            $bairro = sanitize_text_field($dados['user_bairro']);
-            $cidade = sanitize_text_field($dados['user_cidade']);
-            $uf = sanitize_text_field($dados['user_uf']);
+
+            $user_id = sanitize_text_field( $dados['user_id']);
+            $user_email = sanitize_text_field( $dados['user_email']);
+            $cep = sanitize_text_field( $dados['user_cep']);
+            $logradouro = sanitize_text_field( $dados['user_logradouro']);
+            $numero = sanitize_text_field( $dados['user_numero']);
+            $complemento = sanitize_text_field( $dados['user_complemento']);
+            $bairro = sanitize_text_field( $dados['user_bairro']);
+            $cidade = sanitize_text_field( $dados['user_cidade']);
+            $uf = sanitize_text_field( $dados['user_uf']);
 
 
 
+            // Verifique se o e-mail já está em uso por outro usuário
+            $user_id_by_email = email_exists($user_email);
+            // Se o e-mail já estiver em uso e não pertencer ao usuário atual, retorne um erro
+            if ($user_id_by_email && $user_id_by_email !=  $user_id) {
+                $retorno = array(
+                    'status' => 'erro',
+                    'message' => 'E-MAIL JÁ CADASTRADO POR OUTRO USUÁRIO',
+                );
+                return new WP_REST_Response($retorno, 200);
+            }
 
-            //Criamos um Array que vai para o BD do WP
-            //com ele apontamos login, senha, nome e cria um id com essas informações
-            $WP_array = array(
-                'user_login'    =>  $user_cpf,
-                'user_email'    =>  $user_email,
-                'user_pass'     =>  $user_senha,
-                'user_url'      =>  '',
-                'display_name'  =>  $first_name,
-                'first_name'    =>  $first_name,
-                'last_name'     =>  $last_name,
-                'nickname'      =>  $first_name,
-                'description'   =>  '',
-            );
-            $idUser = wp_insert_user($WP_array);
-            // Atribua o papel de "Autor" ao usuário
-            $user = new WP_User($idUser);
-            $user->set_role('author');
+
 
 
             //Função para salvar no BD do WP 
-            update_user_meta($idUser, 'user_nome_completo', $user_nome);
-            update_user_meta($idUser, 'user_cpf', $user_cpf);
-            update_user_meta($idUser, 'user_codigo_entidade',  $user_codigo_entidade);
-            update_user_meta($idUser, 'user_codigo_operador',  $user_codigo_operador);
-            update_user_meta($idUser, 'user_telefone', $user_celular);
-            update_user_meta($idUser, 'user_email', $user_email);
-            update_user_meta($idUser, 'user_cep', $cep);
-            update_user_meta($idUser, 'user_logradouro', $logradouro);
-            update_user_meta($idUser, 'user_numero', $numero);
-            update_user_meta($idUser, 'user_complemento', $complemento);
-            update_user_meta($idUser, 'user_bairro', $bairro);
-            update_user_meta($idUser, 'user_cidade', $cidade);
-            update_user_meta($idUser, 'user_uf', $uf);
+
+            //usamos para editar email que é nativo do WP
+            wp_update_user(array('ID' => $user_id, 'user_email' => $user_email));
+            update_user_meta($user_id, 'user_email', $user_email);
+            update_user_meta($user_id, 'user_cep', $cep);
+            update_user_meta($user_id, 'user_logradouro', $logradouro);
+            update_user_meta($user_id, 'user_numero', $numero);
+            update_user_meta($user_id, 'user_complemento', $complemento);
+            update_user_meta($user_id, 'user_bairro', $bairro);
+            update_user_meta($user_id, 'user_cidade', $cidade);
+            update_user_meta($user_id, 'user_uf', $uf);
 
 
             $retorno  = array(
@@ -170,7 +157,7 @@
         {
             $version = time();
             wp_enqueue_script('jquery-mask', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js', array('jquery'), '1.14.16', true);
-            wp_enqueue_script('update-script', plugins_url('wp-plugin-update-usuario/assets/js/formularioUpdate.js'), array('jquery'), $version, true);
+            wp_enqueue_script('update-usuario', plugins_url('wp-plugin-update-usuario/assets/js/formularioUpdate.js'), array('jquery'), $version, true);
         }
     }
 
