@@ -37,6 +37,10 @@
             user_cpf: jQuery('#loginUsuario-cpf').val().trim(),
             user_senha: jQuery('#loginUsuario-senha').val().trim(),
         };
+        
+
+        $("#btn-usuario-login").prop("disabled", true);
+        $("#btn-usuario-login").text("VALIDANDO");
 
         // Pega o domínio atual
         var dominioAtual = window.location.origin;
@@ -51,9 +55,12 @@
                 console.log(data);
                 if (data.status === 'sucesso') {
                     // alert("SALVO COM SUCESSO");
+                    $("#msm-carregando").css("display", "block");
                     window.location.href = dominioAtual;
                 } else {
                     alert(data.message);
+                    $("#btn-usuario-login").prop("disabled", false);
+                    $("#btn-usuario-login").text("ENTRAR");
                 }
             },
             error: function (data) {
