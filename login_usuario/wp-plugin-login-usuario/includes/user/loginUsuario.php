@@ -24,9 +24,7 @@ class LoginUsuario
             exit();
         }
         ?>
-        <div id="msm-carregando" style="display: none;">
-            <h4>Aguarde você será redirecionando....</h4>
-        </div>
+        
         <!-- Formulario em HTML -->
         <form name="formLoginUser" id="formLoginUser" action="#" autocomplete="off">
             <label for="loginUsuario-cpf">CPF</label>
